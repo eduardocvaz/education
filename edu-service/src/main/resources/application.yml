@@ -1,6 +1,7 @@
 server:
   port: 8381
 
+
 management:
   endpoints:
     web:
@@ -13,6 +14,8 @@ management:
       enabled: true
 
 spring:
+  main:
+    allow-bean-definition-overriding: true
   application:
     name: edu-service
 
@@ -29,3 +32,13 @@ app:
   url:
     fetch-organization-details: ${app.gateways.org.url}/org/organization/{url}
     fetch-researcher-details: ${app.gateways.orcid.url}/orcid/researcher/{orcid}
+
+resilience4j.circuitbreaker:
+  instances:
+    customer-service:
+      failureRateThreshold: 10
+      minimumNumberOfCalls: 10
+      slidingWindowType: TIME_BASED
+      slidingWindowSize: 10
+      waitDurationInOpenState: 50s
+      permittedNumberOfCallsInHalfOpenState: 3
