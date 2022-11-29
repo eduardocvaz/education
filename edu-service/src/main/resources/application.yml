@@ -42,3 +42,8 @@ resilience4j.circuitbreaker:
       slidingWindowSize: 10
       waitDurationInOpenState: 50s
       permittedNumberOfCallsInHalfOpenState: 3
+resilience4j.retry:
+    instances:
+      flightSearch:
+        maxRetryAttempts: 3
+        waitDuration: 2s

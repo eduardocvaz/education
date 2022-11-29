@@ -22,7 +22,6 @@ public class EduService {
 
         Organization organization = orgGateway.getOrganization(url);
 
-
         if (organization.getResearchers() != null) {
             organization.setResearchers(organization.getResearchers().stream().map(researcher -> orcidGateway.getResearcher(researcher.getOrcid())).toList());
         }

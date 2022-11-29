@@ -3,6 +3,7 @@ package com.labcomu.edu.client;
 import com.labcomu.edu.configuration.EduProperties;
 import com.labcomu.edu.exceptions.CircuitBreakerOpenException;
 import com.labcomu.edu.resource.Organization;
+import io.github.resilience4j.retry.annotation.Retry;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
@@ -33,7 +34,7 @@ public class OrgGateway {
         this.fetchOrganizationUrl = properties.getUrl().getFetchOrganizationDetails();
         this.reactiveCircuitBreakerFactory = reactiveCircuitBreakerFactory;
     }
-
+    @Retry(name = "flightSearch")
     public Organization getOrganization(@NotNull final String url) {
         return webClientBuilder.build()
                 .get()
@@ -46,7 +47,7 @@ public class OrgGateway {
                     return rcb.run(
                             it,
                             throwable -> {
-                                log.info("throwable in OrgGateway {}", throwable.toString());
+                                log.error("throwable in OrgGateway {}", throwable.toString());
                                 return Mono.error(new CircuitBreakerOpenException("Serviço Temporarialmente Indisponivel"));
                             }
                             );

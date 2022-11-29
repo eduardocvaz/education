@@ -1,5 +1,6 @@
 package com.labcomu.org;
 
+import com.labcomu.faultinjection.annotation.Throw;
 import com.labcomu.org.resource.ResourceOrganization;
 import com.labcomu.org.resource.ResourceResearcher;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,7 @@ import javax.validation.constraints.NotNull;
 public class OrgController {
   private static final int CONFLICT = 409;
   private final OrgService service;
-
+  @Throw(exception=RuntimeException.class, threshold=0.5)
   @GetMapping("organization/{url}")
   public ResponseEntity<ResourceOrganization> getOrganization(@NotNull @PathVariable String url) {
     return ResponseEntity.of(service.getOrganization(url));
