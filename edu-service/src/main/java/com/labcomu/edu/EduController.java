@@ -1,6 +1,7 @@
 package com.labcomu.edu;
 
 import com.labcomu.edu.resource.Organization;
+import com.labcomu.faultinjection.annotation.Delay;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;

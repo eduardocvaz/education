@@ -2,6 +2,7 @@ package com.labcomu.edu.client;
 
 import com.labcomu.edu.configuration.EduProperties;
 import com.labcomu.edu.resource.Researcher;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.annotation.Validated;
@@ -22,7 +23,7 @@ public class OrcidGateway {
         this.fetchResearcherUrl = properties.getUrl().getFetchResearcherDetails();
 
     }
-
+//    @Retry(name = "flightSearch")
     public Researcher getResearcher(@NotNull final String orcid) {
         return webClientBuilder.build()
                 .get()

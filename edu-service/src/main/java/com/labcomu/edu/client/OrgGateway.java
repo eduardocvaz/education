@@ -3,7 +3,9 @@ package com.labcomu.edu.client;
 import com.labcomu.edu.configuration.EduProperties;
 import com.labcomu.edu.exceptions.CircuitBreakerOpenException;
 import com.labcomu.edu.resource.Organization;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
+import io.github.resilience4j.timelimiter.annotation.TimeLimiter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreakerFactory;
@@ -17,6 +19,7 @@ import org.springframework.web.reactive.function.client.WebClientResponseExcepti
 import reactor.core.publisher.Mono;
 
 import javax.validation.constraints.NotNull;
+import java.util.concurrent.TimeoutException;
 
 @Component
 @Slf4j
@@ -34,7 +37,8 @@ public class OrgGateway {
         this.fetchOrganizationUrl = properties.getUrl().getFetchOrganizationDetails();
         this.reactiveCircuitBreakerFactory = reactiveCircuitBreakerFactory;
     }
-    @Retry(name = "flightSearch")
+
+
     public Organization getOrganization(@NotNull final String url) {
         return webClientBuilder.build()
                 .get()
@@ -47,6 +51,10 @@ public class OrgGateway {
                     return rcb.run(
                             it,
                             throwable -> {
+                                if (throwable instanceof TimeoutException) {
+                                    log.error("throwable in OrgGateway {}", throwable.toString());
+                                    return Mono.error(new CircuitBreakerOpenException("Serviço esta demorando muito para responder"));
+                                }
                                 log.error("throwable in OrgGateway {}", throwable.toString());
                                 return Mono.error(new CircuitBreakerOpenException("Serviço Temporarialmente Indisponivel"));
                             }

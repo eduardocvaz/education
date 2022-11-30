@@ -3,3 +3,4 @@ GET http://{{orcid-service-host}}/api/v1/orcid/active
 
 ### fetch-record-details
 GET http://{{orcid-service-host}}/api/v1/orcid/researcher/0000-0002-2102-8577
+

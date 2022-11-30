@@ -47,3 +47,9 @@ resilience4j.retry:
       flightSearch:
         maxRetryAttempts: 3
         waitDuration: 2s
+resilience4j.timelimiter:
+  configs:
+    default:
+      cancelRunningFuture: false
+      timeoutDuration: 4s
+

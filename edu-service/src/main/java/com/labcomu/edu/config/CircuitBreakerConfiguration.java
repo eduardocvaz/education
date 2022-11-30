@@ -11,9 +11,14 @@ import java.time.Duration;
 public class CircuitBreakerConfiguration {
     @Bean
     public Customizer<ReactiveResilience4JCircuitBreakerFactory> customerServiceCusomtizer() {
+        TimeLimiterConfig config = TimeLimiterConfig.custom()
+                .cancelRunningFuture(true)
+                .timeoutDuration(Duration.ofMillis(2000))
+                .build();
+
         return factory -> {
             factory.configure(builder -> builder
-                    .timeLimiterConfig(TimeLimiterConfig.custom().timeoutDuration(Duration.ofSeconds(2)).build())
+                    .timeLimiterConfig(config)
                     .circuitBreakerConfig(CircuitBreakerConfig.ofDefaults()), "customer-service");
         };
     }
